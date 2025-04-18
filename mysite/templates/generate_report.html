@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Generate Report{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Generate Report</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Please select the report parameters:</p>
+                    
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label for="reportType" class="form-label">Report Type</label>
+                            <select class="form-select" id="reportType" required>
+                                <option value="" selected disabled>Select report type</option>
+                                {% for report_type in report_types %}
+                                <option value="{{ report_type.id }}">{{ report_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <select class="form-select" id="location" required>
+                                {% for location in locations %}
+                                <option value="{{ location.id }}" {% if location.id == 'all' %}selected{% endif %}>{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="animalType" class="form-label">Animal Type</label>
+                            <select class="form-select" id="animalType" required>
+                                {% for animal_type in animal_types %}
+                                <option value="{{ animal_type.id }}" {% if animal_type.id == 'all' %}selected{% endif %}>{{ animal_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="dateRange" class="form-label">Date Range</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" id="startDate" required>
+                                <span class="input-group-text">to</span>
+                                <input type="date" class="form-control" id="endDate" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="format" class="form-label">Output Format</label>
+                            <select class="form-select" id="format" required>
+                                <option value="pdf" selected>PDF</option>
+                                <option value="excel">Excel</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set default dates (today and 30 days ago)
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        
+        document.getElementById('endDate').valueAsDate = today;
+        document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+    });
+
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const reportType = document.getElementById('reportType').value;
+        const location = document.getElementById('location').value;
+        const animalType = document.getElementById('animalType').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const format = document.getElementById('format').value;
+        
+        // In a real implementation, this would generate and download the report
+        // For now, we'll just show an alert and redirect back to the dashboard
+        alert(`Report generation started for ${reportType} (${format.toUpperCase()}). The report will be available for download shortly.`);
+        window.location.href = "{% url 'dashboard' %}";
+    });
+</script>
+{% endblock %}

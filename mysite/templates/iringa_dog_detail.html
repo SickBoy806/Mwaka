@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ dog.name }} Details</h2>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <td>{{ dog.name }}</td>
+        </tr>
+        <tr>
+            <th>Origin</th>
+            <td>{{ dog.origin }}</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td>{{ dog.date_of_birth }}</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td>{{ dog.gender }}</td>
+        </tr>
+        <tr>
+            <th>Work</th>
+            <td>{{ dog.work }}</td>
+        </tr>
+        <tr>
+            <th>Training Details</th>
+            <td>{{ dog.training_details }}</td>
+        </tr>
+        <tr>
+            <th>Weight</th>
+            <td>{{ dog.weight }}</td>
+        </tr>
+        <tr>
+            <th>Treatment Details</th>
+            <td>{{ dog.treatment_details }}</td>
+        </tr>
+        <tr>
+            <th>Transfer Details</th>
+            <td>{{ dog.transfer_details }}</td>
+        </tr>
+    </table>
+    <a href="{% url 'iringa_dog_update' dog.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'iringa_dog_delete' dog.pk %}" class="btn btn-danger">Delete</a>
+{% endblock %}

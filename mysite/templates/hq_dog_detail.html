@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Dog Details</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Dog Information
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ dog.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Breed</th>
+                            <td>{{ dog.breed }}</td>
+                        </tr>
+                        <tr>
+                            <th>Origin</th>
+                            <td>{{ dog.origin }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date of Birth</th>
+                            <td>{{ dog.date_of_birth }}</td>
+                        </tr>
+                        <tr>
+                            <th>Gender</th>
+                            <td>{{ dog.gender }}</td>
+                        </tr>
+                        <tr>
+                            <th>Work</th>
+                            <td>{{ dog.work }}</td>
+                        </tr>
+                        <tr>
+                            <th>Training Details</th>
+                            <td>{{ dog.training_details }}</td>
+                        </tr>
+                        <tr>
+                            <th>Weight</th>
+                            <td>{{ dog.weight }}</td>
+                        </tr>
+                        <tr>
+                            <th>Treatment Details</th>
+                            <td>{{ dog.treatment_details }}</td>
+                        </tr>
+                        <tr>
+                            <th>Transfer Details</th>
+                            <td>{{ dog.transfer_details }}</td>
+                        </tr>
+                    </table>
+
+                    <a href="{% url 'hq_dog_update' dog.pk %}" class="btn btn-warning">Edit</a>
+                    <a href="{% url 'hq_dog_delete' dog.pk %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

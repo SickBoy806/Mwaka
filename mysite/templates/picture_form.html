@@ -1,0 +1,226 @@
+<!-- picture_form.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{% if form.instance.pk %}Update{% else %}Create{% endif %} Picture</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        Please correct the errors below.
+      </div>
+    {% endif %}
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Image Information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+              {{ form.image }}
+              {% if form.image.errors %}
+                <div class="text-danger">{{ form.image.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <div class="text-danger">{{ form.title.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Animal Type</label>
+              <div class="d-flex gap-3">
+                {% for radio in form.animal_type %}
+                  <div class="form-check">
+                    {{ radio.tag }}
+                    <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+              {% if form.animal_type.errors %}
+                <div class="text-danger">{{ form.animal_type.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.location.id_for_label }}" class="form-label">Location</label>
+              {{ form.location }}
+              {% if form.location.errors %}
+                <div class="text-danger">{{ form.location.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.related_object_id.id_for_label }}" class="form-label">Related ID</label>
+              {{ form.related_object_id }}
+              {% if form.related_object_id.errors %}
+                <div class="text-danger">{{ form.related_object_id.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.related_object_name.id_for_label }}" class="form-label">Related Object Name</label>
+              {{ form.related_object_name }}
+              {% if form.related_object_name.errors %}
+                <div class="text-danger">{{ form.related_object_name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.age_description.id_for_label }}" class="form-label">Age Description</label>
+              {{ form.age_description }}
+              {% if form.age_description.errors %}
+                <div class="text-danger">{{ form.age_description.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Animal Details</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.force_no.id_for_label }}" class="form-label">Force Number</label>
+              {{ form.force_no }}
+              {% if form.force_no.errors %}
+                <div class="text-danger">{{ form.force_no.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="text-danger">{{ form.name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.origin.id_for_label }}" class="form-label">Origin</label>
+              {{ form.origin }}
+              {% if form.origin.errors %}
+                <div class="text-danger">{{ form.origin.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+              {{ form.date_of_birth }}
+              {% if form.date_of_birth.errors %}
+                <div class="text-danger">{{ form.date_of_birth.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+              {{ form.gender }}
+              {% if form.gender.errors %}
+                <div class="text-danger">{{ form.gender.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.weight.id_for_label }}" class="form-label">Weight</label>
+              {{ form.weight }}
+              {% if form.weight.errors %}
+                <div class="text-danger">{{ form.weight.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.work.id_for_label }}" class="form-label">Work</label>
+              {{ form.work }}
+              {% if form.work.errors %}
+                <div class="text-danger">{{ form.work.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Training & Medical Information</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.training_details.id_for_label }}" class="form-label">Training Details</label>
+              {{ form.training_details }}
+              {% if form.training_details.errors %}
+                <div class="text-danger">{{ form.training_details.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.medical_records.id_for_label }}" class="form-label">Medical Records</label>
+              {{ form.medical_records }}
+              {% if form.medical_records.errors %}
+                <div class="text-danger">{{ form.medical_records.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="{{ form.vaccination_record.id_for_label }}" class="form-label">Vaccination Record</label>
+              {{ form.vaccination_record }}
+              {% if form.vaccination_record.errors %}
+                <div class="text-danger">{{ form.vaccination_record.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.treatment_record.id_for_label }}" class="form-label">Treatment Record</label>
+              {{ form.treatment_record }}
+              {% if form.treatment_record.errors %}
+                <div class="text-danger">{{ form.treatment_record.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.deworming_record.id_for_label }}" class="form-label">Deworming Record</label>
+          {{ form.deworming_record }}
+          {% if form.deworming_record.errors %}
+            <div class="text-danger">{{ form.deworming_record.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.transfer_detail.id_for_label }}" class="form-label">Transfer Details</label>
+          {{ form.transfer_detail }}
+          {% if form.transfer_detail.errors %}
+            <div class="text-danger">{{ form.transfer_detail.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <a href="{% url 'picture_list' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Iringa Dogs</h2>
+
+    <a href="{% url 'iringa_dog_create' %}" class="btn btn-primary">Add New Dog</a>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dog in dogs %}
+            <tr>
+                <td><a href="{% url 'iringa_dog_detail' dog.pk %}">{{ dog.name }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

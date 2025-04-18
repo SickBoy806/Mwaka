@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Dodoma Dogs</h2>
+
+    <a href="{% url 'dodoma_dog_create' %}" class="btn btn-primary">Add New Dog</a>
+
+    <ul>
+        {% for dog in dogs %}
+            <li>
+                <a href="{% url 'dodoma_dog_detail' dog.pk %}">{{ dog.name }}</a>
+            </li>
+        {% empty %}
+            <li>No dogs found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

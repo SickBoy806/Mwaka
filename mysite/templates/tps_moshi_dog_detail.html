@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">TPS Moshi Dog Detail</h2>
+        <div class="card">
+            <div class="card-header">
+                {{ dog.name }}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Microchip ID:</strong> {{ dog.microchip_id }}</p>
+                        <p><strong>Breed:</strong> {{ dog.breed }}</p>
+                        <p><strong>Origin:</strong> {{ dog.origin }}</p>
+                        <p><strong>Date of Birth:</strong> {{ dog.date_of_birth }}</p>
+                        <p><strong>Gender:</strong> {{ dog.gender }}</p>
+                        <p><strong>Weight:</strong> {{ dog.weight }} kg</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Work:</strong> {{ dog.work }}</p>
+                        <p><strong>Behavioral Notes:</strong> {{ dog.behavioral_notes }}</p>
+                        <p><strong>Training Details:</strong> {{ dog.training_details }}</p>
+                        <p><strong>Treatment Details:</strong> {{ dog.treatment_details }}</p>
+                        <p><strong>Transfer Details:</strong> {{ dog.transfer_details }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                <a href="{% url 'tps_moshi_dog_update' dog.pk %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'tps_moshi_dog_delete' dog.pk %}" class="btn btn-danger ml-2">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

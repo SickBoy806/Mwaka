@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --text-color: #333;
+            --light-color: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+        }
+
+               body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; /* Add this to remove default margin */
+            padding: 0; /* Add this to remove default padding */
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            max-width: 480px;
+            width: 90%;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            background-color: #fff;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            margin: 20px 0; /* Add some vertical margin */
+        }
+
+        .login-container:hover {
+            box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #6c757d;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            background-color: #fff;
+        }
+
+        .input-group .icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus + .icon {
+            color: var(--primary-color);
+        }
+
+        .input-group .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.2s ease;
+        }
+
+        .input-group .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .additional-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .forgot-password a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .forgot-password a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            box-shadow: 0 6px 18px rgba(67, 97, 238, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-login:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(67, 97, 238, 0.2);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-footer p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .login-footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .wave {
+            display: block;
+            position: relative;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .wave:before {
+            content: "👋";
+            font-size: 40px;
+            display: inline-block;
+            animation: wave-animation 2.5s infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave-animation {
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+            60% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .float-label {
+            position: absolute;
+            left: 50px;
+            top: 16px;
+            color: #6c757d;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            transform-origin: left top;
+        }
+
+        .input-group input:focus ~ .float-label,
+        .input-group input:not(:placeholder-shown) ~ .float-label {
+            transform: translateY(-24px) scale(0.85);
+            color: var(--primary-color);
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 1.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Screen animations */
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container animate__animated animate__fadeIn animate__faster">
+            <div class="login-header">
+                <div class="wave"></div>
+                <h2 class="animate__animated animate__fadeInDown">Welcome Back!</h2>
+                <p class="text-muted animate__animated animate__fadeIn animate__delay-1s">Enter your credentials to access your account</p>
+            </div>
+
+            <form method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+
+                <div class="input-group animate__animated animate__fadeInUp animate__delay-1s">
+                    <input type="text" id="username" name="username" placeholder=" " required>
+                    <i class="icon fas fa-user"></i>
+                    <label for="username" class="float-label">Username</label>
+                    <div class="invalid-feedback">
+                        Please enter your username
+                    </div>
+                </div>
+
+                <div class="input-group animate__animated animate__fadeInUp animate__delay-2s">
+                    <input type="password" id="password" name="password" placeholder=" " required>
+                    <i class="icon fas fa-lock"></i>
+                    <span class="password-toggle" id="passwordToggle">
+                        <i class="fa fa-eye-slash"></i>
+                    </span>
+                    <label for="password" class="float-label">Password</label>
+                    <div class="invalid-feedback">
+                        Please enter your password
+                    </div>
+                </div>
+
+                <div class="additional-options animate__animated animate__fadeIn animate__delay-3s">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="{% url 'password_reset' %}">Forgot password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login animate__animated animate__fadeInUp animate__delay-3s">
+                    Login <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </form>
+
+            <div class="login-footer animate__animated animate__fadeIn animate__delay-4s">
+                <p>Don't have an account? <a href="{% url 'register' %}" class="register-link">Create one</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const form = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const loginButton = document.querySelector('.btn-login');
+            const registerLink = document.querySelector('.register-link');
+
+            // Animation when page loads
+            setTimeout(() => {
+                document.querySelector('.login-container').classList.add('pulse');
+            }, 300);
+
+            // Form validation
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // Shake invalid fields
+                    if (!usernameInput.validity.valid) {
+                        usernameInput.parentElement.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => {
+                            usernameInput.parentElement.classList.remove('animate__animated', 'animate__shakeX');
+                        }, 500);
+                    }
+
+                    if (!passwordInput.validity.valid) {
+                        passwordInput.parentElement.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => {
+                            passwordInput.parentElement.classList.remove('animate__animated', 'animate__shakeX');
+                        }, 500);
+                    }
+                } else {
+                    // Add loading state to button
+                    loginButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Logging in...';
+                    loginButton.disabled = true;
+                }
+
+                form.classList.add('was-validated');
+            });
+
+            // Password visibility toggle
+            passwordToggle.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    icon.classList.add('animate__animated', 'animate__fadeIn', 'animate__faster');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    icon.classList.add('animate__animated', 'animate__fadeIn', 'animate__faster');
+                }
+
+                setTimeout(() => {
+                    icon.classList.remove('animate__animated', 'animate__fadeIn', 'animate__faster');
+                }, 300);
+            });
+
+            // Button hover effects
+            loginButton.addEventListener('mouseover', function() {
+                this.classList.add('animate__animated', 'animate__pulse', 'animate__faster');
+            });
+
+            loginButton.addEventListener('mouseout', function() {
+                this.classList.remove('animate__animated', 'animate__pulse', 'animate__faster');
+            });
+
+            // Input focus animations
+            const inputElements = document.querySelectorAll('.input-group input');
+
+            inputElements.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('animate__animated', 'animate__pulse', 'animate__faster');
+                    setTimeout(() => {
+                        this.parentElement.classList.remove('animate__animated', 'animate__pulse', 'animate__faster');
+                    }, 300);
+                });
+            });
+
+            // Register link animation
+            registerLink.addEventListener('mouseover', function() {
+                this.classList.add('animate__animated', 'animate__headShake');
+            });
+
+            registerLink.addEventListener('mouseout', function() {
+                this.classList.remove('animate__animated', 'animate__headShake');
+            });
+
+            // Easter egg - Konami code
+            let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+            let konamiCodePosition = 0;
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === konamiCode[konamiCodePosition]) {
+                    konamiCodePosition++;
+
+                    if (konamiCodePosition === konamiCode.length) {
+                        // Easter egg animation
+                        document.querySelector('.login-container').style.animation = 'spin 1s ease-in-out';
+                        setTimeout(() => {
+                            document.querySelector('.login-container').style.animation = '';
+                        }, 1000);
+
+                        konamiCodePosition = 0;
+                    }
+                } else {
+                    konamiCodePosition = 0;
+                }
+            });
+
+            // Add spinning animation
+            document.head.insertAdjacentHTML('beforeend', `
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `);
+        });
+    </script>
+</body>
+</html>

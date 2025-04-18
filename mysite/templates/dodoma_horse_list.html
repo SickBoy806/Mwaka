@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Dodoma Horses</h2>
+
+  <form method="get">
+    <div>
+      <label for="breed">Filter by Breed:</label>
+      <select name="breed" id="breed">
+        <option value="">All Breeds</option>
+        {% for breed in breed_choices %}
+          <option value="{{ breed }}" {% if breed == selected_breed %}selected{% endif %}>{{ breed }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="age_range">Filter by Age:</label>
+      <select name="age_range" id="age_range">
+        <option value="">All Ages</option>
+        <option value="young" {% if selected_age_range == 'young' %}selected{% endif %}>Young (Under 1 year)</option>
+        <option value="adult" {% if selected_age_range == 'adult' %}selected{% endif %}>Adult (1-5 years)</option>
+        <option value="senior" {% if selected_age_range == 'senior' %}selected{% endif %}>Senior (Over 5 years)</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit">Apply Filters</button>
+        <a href="{% url 'dodoma_horse_list' %}">Clear Filters</a>
+    </div>
+  </form>
+
+  <ul>
+    {% for horse in horses %}
+      <li>
+        <a href="{% url 'dodoma_horse_detail' pk=horse.pk %}">{{ horse.name }}</a> (Breed: {{ horse.breed|default:'N/A' }}, Age: {{ horse.age }})
+      </li>
+    {% empty %}
+      <li>No horses found.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'dodoma_horse_create' %}">Create new horse</a>
+  <br>
+
+  <form method="get" action="{% url 'dodoma_horse_search' %}">
+      <input type="text" name="q" placeholder="Search by name..." value="{{ query }}">
+      <button type="submit">Search</button>
+  </form>
+{% endblock %}

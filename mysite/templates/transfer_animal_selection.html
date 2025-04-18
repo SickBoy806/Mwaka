@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Initiate Animal Transfer{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Initiate Animal Transfer</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Please select the details for the animal transfer:</p>
+                    
+                    <form id="transferSelectionForm">
+                        <div class="mb-3">
+                            <label for="sourceLocation" class="form-label">Source Location</label>
+                            <select class="form-select" id="sourceLocation" required>
+                                <option value="" selected disabled>Select source location</option>
+                                {% for location in locations %}
+                                <option value="{{ location.id }}">{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="animalType" class="form-label">Animal Type</label>
+                            <select class="form-select" id="animalType" required>
+                                <option value="" selected disabled>Select an animal type</option>
+                                {% for animal_type in animal_types %}
+                                <option value="{{ animal_type.id }}">{{ animal_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="destinationLocation" class="form-label">Destination Location</label>
+                            <select class="form-select" id="destinationLocation" required>
+                                <option value="" selected disabled>Select destination location</option>
+                                {% for location in locations %}
+                                <option value="{{ location.id }}">{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Continue</button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('transferSelectionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const sourceLocation = document.getElementById('sourceLocation').value;
+        const animalType = document.getElementById('animalType').value;
+        const destinationLocation = document.getElementById('destinationLocation').value;
+        
+        if (sourceLocation === destinationLocation) {
+            alert("Source and destination locations cannot be the same.");
+            return;
+        }
+        
+        // Here you would typically redirect to a page where the user can select specific animals to transfer
+        // For now, we'll just redirect to the dashboard with a message
+        alert("Transfer selection complete. In a real implementation, you would now select specific animals to transfer.");
+        window.location.href = "{% url 'dashboard' %}";
+    });
+</script>
+{% endblock %}

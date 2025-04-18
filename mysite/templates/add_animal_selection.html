@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add New Animal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Animal</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Please select the location and animal type to proceed:</p>
+                    
+                    <form id="animalSelectionForm">
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Location</label>
+                            <select class="form-select" id="location" required>
+                                <option value="" selected disabled>Select a location</option>
+                                {% for location in locations %}
+                                <option value="{{ location.id }}">{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="animalType" class="form-label">Animal Type</label>
+                            <select class="form-select" id="animalType" required>
+                                <option value="" selected disabled>Select an animal type</option>
+                                {% for animal_type in animal_types %}
+                                <option value="{{ animal_type.id }}">{{ animal_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Continue</button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('animalSelectionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const location = document.getElementById('location').value;
+        const animalType = document.getElementById('animalType').value;
+        
+        if (location && animalType) {
+            // Construct the URL based on selection
+            let url = '';
+            
+            if (location === 'hq' && animalType === 'dog') {
+                url = "{% url 'hq_dog_create' %}";
+            } else if (location === 'hq' && animalType === 'horse') {
+                url = "{% url 'hq_horse_create' %}";
+            } else if (location === 'tps_moshi' && animalType === 'dog') {
+                url = "{% url 'tps_moshi_dog_create' %}";
+            } else if (location === 'tps_moshi' && animalType === 'horse') {
+                url = "{% url 'tps_moshi_horse_create' %}";
+            } else if (location === 'dodoma' && animalType === 'dog') {
+                url = "{% url 'dodoma_dog_create' %}";
+            } else if (location === 'dodoma' && animalType === 'horse') {
+                url = "{% url 'dodoma_horse_create' %}";
+            } else if (location === 'iringa' && animalType === 'dog') {
+                url = "{% url 'iringa_dog_create' %}";
+            } else if (location === 'iringa' && animalType === 'horse') {
+                url = "{% url 'iringa_horse_create' %}";
+            }
+            
+            // Redirect to the appropriate creation page
+            window.location.href = url;
+        }
+    });
+</script>
+{% endblock %}

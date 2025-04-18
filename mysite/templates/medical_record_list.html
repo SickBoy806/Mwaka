@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Medical Records</h1>
+
+  <a href="{% url 'medical_record_create' %}" class="btn btn-primary mb-3">Add New Medical Record</a>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in medical_records %}
+      <tr>
+        <td>{{ record.description }}</td>
+        <td>
+          <a href="{% url 'medical_record_detail' record.pk %}" class="btn btn-info btn-sm">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

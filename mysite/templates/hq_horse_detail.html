@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Horse Details</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ horse.name }}</h5>
+            <p class="card-text"><strong>Origin:</strong> {{ horse.origin }}</p>
+            <p class="card-text"><strong>Date of Birth:</strong> {{ horse.date_of_birth }}</p>
+            <p class="card-text"><strong>Gender:</strong> {{ horse.gender }}</p>
+            <p class="card-text"><strong>Work:</strong> {{ horse.work }}</p>
+            <p class="card-text"><strong>Training Details:</strong> {{ horse.training_details }}</p>
+            <p class="card-text"><strong>Weight:</strong> {{ horse.weight }}</p>
+            <p class="card-text"><strong>Treatment Details:</strong> {{ horse.treatment_details }}</p>
+            <p class="card-text"><strong>Transfer Details:</strong> {{ horse.transfer_details }}</p>
+            
+            <a href="{% url 'hq_horse_update' horse.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'hq_horse_delete' horse.pk %}" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

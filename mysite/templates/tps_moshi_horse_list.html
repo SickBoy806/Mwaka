@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>TPS Moshi Horse List</h2>
+
+    <form method="get">
+        <div>
+            <label for="breed">Filter by Breed:</label>
+            <select name="breed" id="breed">
+                <option value="">All</option>
+                {% for breed in breed_choices %}
+                    <option value="{{ breed }}" {% if request.GET.breed == breed %}selected{% endif %}>{{ breed }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="age_range">Filter by Age:</label>
+            <select name="age_range" id="age_range">
+                <option value="">All</option>
+                <option value="young" {% if request.GET.age_range == 'young' %}selected{% endif %}>Young (Under 1 year)</option>
+                <option value="adult" {% if request.GET.age_range == 'adult' %}selected{% endif %}>Adult (1-5 years)</option>
+                <option value="senior" {% if request.GET.age_range == 'senior' %}selected{% endif %}>Senior (Over 5 years)</option>
+            </select>
+        </div>
+        <button type="submit">Apply Filters</button>
+        <a href="{% url 'tps_moshi_horse_list' %}">Clear Filters</a>
+    </form>
+
+    <ul>
+        {% for horse in horses %}
+            <li>
+                <a href="{% url 'tps_moshi_horse_detail' horse.pk %}">{{ horse.name }}</a> (Breed: {{ horse.breed|default:"N/A" }}, Age: {% if horse.age < 1 %}Young{% elif horse.age <= 5 %}Adult{% else %}Senior{% endif %})
+            </li>
+        {% empty %}
+            <li>No horses found.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'tps_moshi_horse_create' %}">Add New Horse</a>
+{% endblock %}

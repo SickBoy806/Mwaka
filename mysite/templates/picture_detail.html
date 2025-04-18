@@ -1,0 +1,110 @@
+<!-- picture_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Picture Detail</h2>
+
+<div class="row">
+  <div class="col-md-8">
+    {% if picture.image %}
+      <img src="{{ picture.image.url }}" alt="Picture of {{ picture.name|default:related_object_name }}" class="img-fluid">
+    {% endif %}
+  </div>
+  
+  <div class="col-md-4">
+    {% if picture.title %}
+      <p><strong>Title:</strong> {{ picture.title }}</p>
+    {% endif %}
+    
+    <div class="card mb-3">
+      <div class="card-header">Basic Information</div>
+      <div class="card-body">
+        <p><strong>Animal Type:</strong> {{ picture.get_animal_type_display }}</p>
+        <p><strong>Location:</strong> {{ picture.get_location_display }}</p>
+        <p><strong>Name:</strong> {{ picture.name|default:related_object_name }}</p>
+        <p><strong>Force Number:</strong> {{ picture.force_no|default:"Not specified" }}</p>
+        <p><strong>Gender:</strong> {{ picture.gender|default:"Not specified" }}</p>
+        <p><strong>Age Description:</strong> {{ picture.age_description|default:"Not specified" }}</p>
+        <p><strong>Weight:</strong> {{ picture.weight|default:"Not specified" }}</p>
+        <p><strong>Origin:</strong> {{ picture.origin|default:"Not specified" }}</p>
+        {% if picture.date_of_birth %}
+          <p><strong>Date of Birth:</strong> {{ picture.date_of_birth|date:"F j, Y" }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if picture.work %}
+    <div class="card mb-3">
+      <div class="card-header">Work</div>
+      <div class="card-body">
+        <p>{{ picture.work|linebreaks }}</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if picture.training_details %}
+    <div class="card mb-3">
+      <div class="card-header">Training Details</div>
+      <div class="card-body">
+        <p>{{ picture.training_details|linebreaks }}</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if picture.medical_records or picture.vaccination_record or picture.treatment_record or picture.deworming_record %}
+    <div class="card mb-3">
+      <div class="card-header">Medical Information</div>
+      <div class="card-body">
+        {% if picture.medical_records %}
+          <h6>Medical Records</h6>
+          <p>{{ picture.medical_records|linebreaks }}</p>
+        {% endif %}
+        
+        {% if picture.vaccination_record %}
+          <h6>Vaccination Records</h6>
+          <p>{{ picture.vaccination_record|linebreaks }}</p>
+        {% endif %}
+        
+        {% if picture.treatment_record %}
+          <h6>Treatment Records</h6>
+          <p>{{ picture.treatment_record|linebreaks }}</p>
+        {% endif %}
+        
+        {% if picture.deworming_record %}
+          <h6>Deworming Records</h6>
+          <p>{{ picture.deworming_record|linebreaks }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if picture.transfer_detail %}
+    <div class="card mb-3">
+      <div class="card-header">Transfer Details</div>
+      <div class="card-body">
+        <p>{{ picture.transfer_detail|linebreaks }}</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class="card mb-3">
+      <div class="card-header">System Information</div>
+      <div class="card-body">
+        <p><strong>Uploaded:</strong> {{ picture.created_at|date:"F j, Y" }}</p>
+        {% if picture.uploaded_by %}
+          <p><strong>Uploaded By:</strong> {{ picture.uploaded_by.username }}</p>
+        {% endif %}
+        {% if picture.related_object_id %}
+          <p><strong>Related Object ID:</strong> {{ picture.related_object_id }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="mt-4">
+      <a href="{% url 'picture_update' picture.pk %}" class="btn btn-primary">Edit</a>
+      <a href="{% url 'picture_delete' picture.pk %}" class="btn btn-danger">Delete</a>
+      <a href="{% url 'picture_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

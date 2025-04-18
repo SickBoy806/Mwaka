@@ -1,0 +1,41 @@
+<!-- picture_list.html (modified to show more info) -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Picture List</h1>
+
+  <div class="mb-3">
+    <a href="{% url 'picture_create' %}" class="btn btn-primary">Add New Picture</a>
+    
+    <!-- Filter buttons -->
+    <div class="btn-group ms-3">
+      <a href="{% url 'picture_list' %}" class="btn btn-outline-secondary">All</a>
+      <a href="{% url 'picture_list' %}?animal_type=dog" class="btn btn-outline-secondary">Dogs</a>
+      <a href="{% url 'picture_list' %}?animal_type=horse" class="btn btn-outline-secondary">Horses</a>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    {% for picture in pictures %}
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img src="{{ picture.image.url }}" class="card-img-top" alt="Picture">
+          <div class="card-body">
+            <h5 class="card-title">{{ picture.title|default:picture.name|default:picture.related_object_name|default:"Unnamed" }}</h5>
+            <p class="card-text">{{ picture.get_animal_type_display }} - {{ picture.get_location_display }}</p>
+            {% if picture.force_no %}
+              <p class="card-text"><small class="text-muted">Force #: {{ picture.force_no }}</small></p>
+            {% endif %}
+            <a href="{% url 'picture_detail' picture.pk %}" class="btn btn-link">View Details</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <p>No pictures available.</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+Improve
+Explain

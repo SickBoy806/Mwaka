@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>HQ Horses</h2>
+    <a href="{% url 'hq_horse_create' %}" class="btn btn-primary">Add New Horse</a>
+    <ul class="list-group">
+        {% for horse in horses %}
+        <li class="list-group-item">
+            <a href="{% url 'hq_horse_detail' horse.pk %}">{{ horse.name }}</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No horses found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

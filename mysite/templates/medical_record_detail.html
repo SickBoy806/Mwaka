@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Medical Record Detail</h1>
+
+    <p><strong>Date:</strong> {{ medical_record.date }}</p>
+    <p><strong>Description:</strong> {{ medical_record.description }}</p>
+    {% if medical_record.dog %}
+        <p><strong>Dog:</strong> {{ medical_record.dog.name }}</p>
+    {% endif %}
+     {% if medical_record.horse %}
+         <p><strong>Horse:</strong> {{ medical_record.horse.name }}</p>
+    {% endif %}
+    <p><strong>Doctor:</strong> {{ medical_record.doctor.username }}</p>
+
+    <a href="{% url 'medical_record_update' medical_record.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'medical_record_delete' medical_record.pk %}" class="btn btn-danger">Delete</a>
+{% endblock %}

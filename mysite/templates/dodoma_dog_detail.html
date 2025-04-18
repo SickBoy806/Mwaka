@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Dodoma Dog Details</h2>
+    <p><strong>Name:</strong> {{ dog.name }}</p>
+    <p><strong>Origin:</strong> {{ dog.origin }}</p>
+    <p><strong>Date of Birth:</strong> {{ dog.date_of_birth }}</p>
+    <p><strong>Gender:</strong> {{ dog.gender }}</p>
+    <p><strong>Work:</strong> {{ dog.work }}</p>
+    <p><strong>Training Details:</strong> {{ dog.training_details }}</p>
+    <p><strong>Weight:</strong> {{ dog.weight }}</p>
+    <p><strong>Treatment Details:</strong> {{ dog.treatment_details }}</p>
+    <p><strong>Transfer Details:</strong> {{ dog.transfer_details }}</p>
+    <a href="{% url 'dodoma_dog_update' dog.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'dodoma_dog_delete' dog.pk %}" class="btn btn-danger">Delete</a>
+{% endblock %}

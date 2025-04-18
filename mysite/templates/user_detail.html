@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>User Details</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text"><strong>First Name:</strong> {{ user.first_name }}</p>
+            <p class="card-text"><strong>Last Name:</strong> {{ user.last_name }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="card-text"><strong>Role:</strong> {{ user.role }}</p>
+            <p class="card-text"><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+            <p class="card-text"><strong>Is Staff:</strong> {{ user.is_staff }}</p>
+            <p class="card-text"><strong>Is Active:</strong> {{ user.is_active }}</p>
+            <p class="card-text"><strong>Is Superuser:</strong> {{ user.is_superuser }}</p>
+            
+            <a href="{% url 'user_update' user.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'user_delete' user.pk %}" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

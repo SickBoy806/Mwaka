@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Iringa Horses</h2>
+
+    <form method="get">
+        <div>
+            <label for="breed">Breed:</label>
+            <select name="breed" id="breed">
+                <option value="">All</option>
+                {% for breed in breed_choices %}
+                    <option value="{{ breed }}" {% if request.GET.breed == breed %}selected{% endif %}>{{ breed }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="age">Age:</label>
+            <select name="age" id="age">
+                <option value="">All</option>
+                <option value="young" {% if request.GET.age == 'young' %}selected{% endif %}>Young</option>
+                <option value="adult" {% if request.GET.age == 'adult' %}selected{% endif %}>Adult</option>
+                <option value="senior" {% if request.GET.age == 'senior' %}selected{% endif %}>Senior</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Filter</button>
+            <a href="{% url 'iringa_horse_list' %}">Clear Filters</a>
+        </div>
+    </form>
+
+    <ul>
+        {% for horse in horses %}
+            <li>
+                <a href="{% url 'iringa_horse_detail' pk=horse.pk %}">{{ horse.name }}</a> - Breed: {{ horse.breed }} - Date of Birth: {{ horse.date_of_birth }}
+            </li>
+        {% empty %}
+            <li>No horses found matching the criteria.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

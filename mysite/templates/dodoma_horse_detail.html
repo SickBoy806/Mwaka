@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ horse.name }}</h2>
+  <p>Breed: {{ horse.breed|default:"N/A" }}</p>
+  <p>Date of Birth: {{ horse.date_of_birth }}</p>
+  <p>Gender: {{ horse.gender }}</p>
+  <p>Origin: {{ horse.origin }}</p>
+
+  <h3>Medical Records</h3>
+  <ul>
+    {% for record in horse.medical_records.all %}
+      <li>
+        <a href="{% url 'medical_record_detail' record.pk %}">{{ record.date }} - {{ record.description }}</a>
+      </li>
+    {% empty %}
+      <li>No medical records found for this horse.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'medical_record_create' %}">Add Medical Record</a>
+
+  <a href="{% url 'hq_horse_update' horse.pk %}">Update</a>
+  <a href="{% url 'hq_horse_delete' horse.pk %}">Delete</a>
+{% endblock %}
