@@ -13,7 +13,7 @@ class User(AbstractUser):
         ('veterinarian', 'Veterinarian')
     ]
 
-    LOCATION_CHOICES = [
+    USER_LOCATION_CHOICES = [
         ('hq', 'Headquarters'),
         ('tps_moshi', 'TPS Moshi'),
         ('dodoma', 'Dodoma'),
@@ -22,7 +22,7 @@ class User(AbstractUser):
     ]
 
     role = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='user')
-    location = models.CharField(max_length=20, choices=LOCATION_CHOICES, default='hq')
+    location = models.CharField(max_length=20, choices=USER_LOCATION_CHOICES, default='hq')
 
     def __str__(self):
         return self.username

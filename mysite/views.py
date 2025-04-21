@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.auth.views import LoginView
 User = get_user_model()
-from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .models import HQDog, TpsMoshiDog, DodomaDog, IringaDog, HQHorse, MedicalRecord, Picture, ActivityLog, \
@@ -12,8 +14,6 @@ from .models import DodomaHorse, IringaHorse, TpsMoshiHorse
 from .forms import HQDogForm, TpsMoshiDogForm, DodomaDogForm, IringaDogForm, HQHorseForm, MedicalRecordForm, PictureForm, DodomaHorseForm, IringaHorseForm, TpsMoshiHorseForm, UserForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import UserCreationForm
-
-# In views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
@@ -30,7 +30,14 @@ class CustomLoginView(LoginView):
         if not remember_me:
             # Session expires when user closes browser
             self.request.session.set_expiry(0)
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        user = self.request.user
+        if user.role == 'admin' or user.role == 'all':
+            return redirect('admin_dashboard')
+        elif user.role == 'veterinarian':
+            return redirect('veterinarian_dashboard')
+        else:
+            return redirect('user_dashboard')
 
 
 class RegisterView(CreateView):
@@ -48,15 +55,23 @@ def user_profile(request):
     # Your profile view logic here
     return render(request, 'mysite/user_profile.html', {'user': request.user})
 
-def veterinarian_required(view_func):
-    @login_required
-    def wrapped_view(request, *args, **kwargs):
-        if request.user.role == 'veterinarian' or request.user.role == 'admin':
-            return view_func(request, *args, **kwargs)
-        else:
-            messages.error(request, "You do not have permission to access this page.")
-            return redirect('dashboard')  # Or wherever you want to redirect unauthorized users
-    return wrapped_view
+def location_required(allowed_locations):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            user = request.user
+            if not user.is_authenticated:
+                messages.error(request, "Please log in to access this page.")
+                return redirect('login')  # Redirect to login page if not authenticated
+
+            if user.role == 'admin' and user.location == 'hq':
+                return view_func(request, *args, **kwargs)  # HQ admin has full access
+            elif user.location in allowed_locations:
+                return view_func(request, *args, **kwargs)  # Access granted if location matches
+            else:
+                messages.error(request, "You do not have permission to access this area.")
+                return render(request, 'permission_denied.html')  # Render permission denied page
+        return wrapper
+    return decorator
 
 
 def location_required(allowed_locations):
@@ -123,9 +138,6 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', context)
 
-class CustomLoginView(LoginView):
-    template_name = 'login.html'  # You'll need to create this template
-    next_page = 'dashboard'  # Redirect to the dashboard after login
 
 
 def log_activity(user, action, obj=None):
@@ -216,16 +228,13 @@ def dashboard(request):
         'friends_list': friends_list,
         'top_members': top_members,
         'last_activities': last_activities
-    })
 
 
 # Dog Views
 
 @login_required
-@location_required(['hq'])
 def hq_dog_list(request):
     dogs = HQDog.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -237,7 +246,7 @@ def hq_dog_list(request):
     elif age_max:
         dogs = dogs.filter(date_of_birth__lte=age_max)
 
-    context = {'dogs': dogs, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'dogs': dogs, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'hq_dog_list.html', context)
 
 @login_required
@@ -247,7 +256,6 @@ def user_profile(request):
 
 
 @login_required
-@location_required(['hq'])
 def hq_dog_detail(request, pk):
     dog = get_object_or_404(HQDog, pk=pk)
     return render(request, 'hq_dog_detail.html', {'dog': dog})
@@ -267,7 +275,6 @@ def hq_dog_create(request):
 
 
 @login_required
-@location_required(['hq'])
 def hq_dog_update(request, pk):
     dog = get_object_or_404(HQDog, pk=pk)
     if request.method == 'POST':
@@ -281,7 +288,6 @@ def hq_dog_update(request, pk):
     return render(request, 'hq_dog_form.html', {'form': form})
 
 @login_required
-@location_required(['hq'])
 def hq_dog_delete(request, pk):
     dog = get_object_or_404(HQDog, pk=pk)
     if request.method == 'POST':
@@ -292,7 +298,6 @@ def hq_dog_delete(request, pk):
 
 
 @login_required
-@location_required(['hq'])
 def hq_dog_search(request):
     query = request.GET.get('q')
     if query:
@@ -303,10 +308,8 @@ def hq_dog_search(request):
 
 
 @login_required
-@location_required(['tps_moshi'])
 def tps_moshi_dog_list(request):
     dogs = TpsMoshiDog.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -318,7 +321,7 @@ def tps_moshi_dog_list(request):
     elif age_max:
         dogs = dogs.filter(date_of_birth__lte=age_max)
 
-    context = {'dogs': dogs, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'dogs': dogs, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'tps_moshi_dog_list.html', context)
 
 @login_required
@@ -366,7 +369,6 @@ def tps_moshi_dog_delete(request, pk):
 
 
 @login_required
-@location_required(['tps_moshi'])
 def tps_moshi_dog_search(request):
     query = request.GET.get('q')
     if query:
@@ -377,10 +379,8 @@ def tps_moshi_dog_search(request):
 
 
 @login_required
-@location_required(['dodoma'])
 def dodoma_dog_list(request):
     dogs = DodomaDog.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -392,7 +392,7 @@ def dodoma_dog_list(request):
     elif age_max:
         dogs = dogs.filter(date_of_birth__lte=age_max)
 
-    context = {'dogs': dogs, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'dogs': dogs, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'dodoma_dog_list.html', context)
 
 @login_required
@@ -440,7 +440,6 @@ def dodoma_dog_delete(request, pk):
 
 
 @login_required
-@location_required(['dodoma'])
 def dodoma_dog_search(request):
     query = request.GET.get('q')
     if query:
@@ -451,10 +450,8 @@ def dodoma_dog_search(request):
 
 
 @login_required
-@location_required(['iringa'])
 def iringa_dog_list(request):
     dogs = IringaDog.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -466,7 +463,7 @@ def iringa_dog_list(request):
     elif age_max:
         dogs = dogs.filter(date_of_birth__lte=age_max)
 
-    context = {'dogs': dogs, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'dogs': dogs, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'iringa_dog_list.html', context)
 
 @login_required
@@ -514,7 +511,6 @@ def iringa_dog_delete(request, pk):
 
 
 @login_required
-@location_required(['iringa'])
 def iringa_dog_search(request):
     query = request.GET.get('q')
     if query:
@@ -527,10 +523,8 @@ def iringa_dog_search(request):
 # Horse Views
 
 @login_required
-@location_required(['hq'])
 def hq_horse_list(request):
     horses = HQHorse.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -542,7 +536,7 @@ def hq_horse_list(request):
     elif age_max:
         horses = horses.filter(date_of_birth__lte=age_max)
 
-    context = {'horses': horses, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'horses': horses, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'hq_horse_list.html', context)
 
 @login_required
@@ -780,10 +774,8 @@ def activity_log_list(request):
 # Dodoma Horse Views
 
 @login_required
-@location_required(['dodoma'])
 def dodoma_horse_list(request):
     horses = DodomaHorse.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -795,7 +787,7 @@ def dodoma_horse_list(request):
     elif age_max:
         horses = horses.filter(date_of_birth__lte=age_max)
 
-    context = {'horses': horses, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'horses': horses, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'dodoma_horse_list.html', context)
 
 @login_required
@@ -889,10 +881,8 @@ def dodoma_horse_detail(request, pk):
 # Iringa Horse Views
 
 @login_required
-@location_required(['iringa'])
 def iringa_horse_list(request):
     horses = IringaHorse.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -904,7 +894,7 @@ def iringa_horse_list(request):
     elif age_max:
         horses = horses.filter(date_of_birth__lte=age_max)
 
-    context = {'horses': horses, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'horses': horses, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'iringa_horse_list.html', context)
 
 @login_required
@@ -963,10 +953,8 @@ def iringa_horse_search(request):
 # TPS Moshi Horse Views
 
 @login_required
-@location_required(['tps_moshi'])
 def tps_moshi_horse_list(request):
     horses = TpsMoshiHorse.objects.all()
-    breed = request.GET.getlist('breed')
     age_min = request.GET.get('age_min')
     age_max = request.GET.get('age_max')
     if breed:
@@ -978,7 +966,7 @@ def tps_moshi_horse_list(request):
     elif age_max:
         horses = horses.filter(date_of_birth__lte=age_max)
 
-    context = {'horses': horses, 'breed': breed, 'age_min': age_min, 'age_max': age_max}
+    context = {'horses': horses, 'age_min': age_min, 'age_max': age_max}
     return render(request, 'tps_moshi_horse_list.html', context)
 
 @login_required
@@ -1157,56 +1145,6 @@ def generate_report(request):
     return render(request, 'generate_report.html', context)
 
 @login_required
-def all_animals_search(request):
-    query = request.GET.get('q')
-    results = []
-
-    if query:
-        # Admin users can search across all locations
-        if request.user.role == 'admin' or request.user.location == 'all':
-            # Original search code for all locations
-            hq_dogs = HQDog.objects.filter(name__icontains=query)
-            tps_moshi_dogs = TpsMoshiDog.objects.filter(name__icontains=query)
-            dodoma_dogs = DodomaDog.objects.filter(name__icontains=query)
-            iringa_dogs = IringaDog.objects.filter(name__icontains=query)
-            hq_horses = HQHorse.objects.filter(name__icontains=query)
-            dodoma_horses = DodomaHorse.objects.filter(name__icontains=query)
-            iringa_horses = IringaHorse.objects.filter(name__icontains=query)
-            tps_moshi_horses = TpsMoshiHorse.objects.filter(name__icontains=query)
-        else:
-            # Location-specific search
-            if request.user.location == 'hq':
-                hq_dogs = HQDog.objects.filter(name__icontains=query)
-                hq_horses = HQHorse.objects.filter(name__icontains=query)
-                tps_moshi_dogs = tps_moshi_horses = dodoma_dogs = dodoma_horses = iringa_dogs = iringa_horses = []
-            elif request.user.location == 'tps_moshi':
-                tps_moshi_dogs = TpsMoshiDog.objects.filter(name__icontains=query)
-                tps_moshi_horses = TpsMoshiHorse.objects.filter(name__icontains=query)
-                hq_dogs = hq_horses = dodoma_dogs = dodoma_horses = iringa_dogs = iringa_horses = []
-            elif request.user.location == 'dodoma':
-                dodoma_dogs = DodomaDog.objects.filter(name__icontains=query)
-                dodoma_horses = DodomaHorse.objects.filter(name__icontains=query)
-                hq_dogs = hq_horses = tps_moshi_dogs = tps_moshi_horses = iringa_dogs = iringa_horses = []
-            elif request.user.location == 'iringa':
-                iringa_dogs = IringaDog.objects.filter(name__icontains=query)
-                iringa_horses = IringaHorse.objects.filter(name__icontains=query)
-                hq_dogs = hq_horses = tps_moshi_dogs = tps_moshi_horses = dodoma_dogs = dodoma_horses = []
-
-        # Combine results based on what was fetched
-        # Only process the variables that are defined and non-empty
-        if 'hq_dogs' in locals() and hq_dogs:
-            for dog in hq_dogs:
-                results.append({'type': 'HQ Dog', 'name': dog.name, 'id': dog.id, 'url': f'/hq_dog/{dog.id}/'})
-        if 'tps_moshi_dogs' in locals() and tps_moshi_dogs:
-            for dog in tps_moshi_dogs:
-                results.append(
-                    {'type': 'TPS Moshi Dog', 'name': dog.name, 'id': dog.id, 'url': f'/tps_moshi_dog/{dog.id}/'})
-        # Continue for all other animal types...
-
-    return render(request, 'all_animals_search.html', {'results': results, 'query': query})
-
-# Add to your views.py
-
 def transfer_list(request):
     transfers = AnimalTransfer.objects.all().order_by('-date')
     return render(request, 'transfer_list.html', {'transfers': transfers})
@@ -1241,7 +1179,26 @@ def transfer_approve(request, pk):
     transfer.save()
     return redirect('transfer_list')
 
+@login_required
+@user_passes_test(lambda u: u.role == 'admin' or u.role == 'all', login_url='dashboard')
+def admin_dashboard(request, role='admin'):  # Default to 'admin' role
+
+    return render(request, 'admin_dashboard.html', {'role': role})
+
+@login_required
+def user_dashboard(request):
+    # Add user-specific content here
+    return render(request, 'user_dashboard.html')
+
+
+@login_required
+def veterinarian_dashboard(request):
+    # Add veterinarian-specific content here
+    return render(request, 'veterinarian_dashboard.html')
 def transfer_report(request, pk):
     transfer = get_object_or_404(AnimalTransfer, pk=pk)
     # Generate report logic here
     return HttpResponse("Report for transfer " + str(pk))
+
+
+def veterinarian_dashboard(request):
